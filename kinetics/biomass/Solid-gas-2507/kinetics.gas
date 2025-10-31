@@ -64,9 +64,9 @@ FORD /C2H6 0.1/
 FORD /O2 1.65/
 
 C6H6+4.5O2 => 6CO + 3H2O                                  2.40E+11    0.0    30000
-FORD /C2H6 0.1/
+FORD /C6H6 0.1/
 FORD /O2 1.65/
-!FORD /C2H6 -0.1/
+!FORD /C6H6 -0.1/
 !FORD /O2 1.85/
 !!!
 
