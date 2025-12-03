@@ -396,3 +396,33 @@
          k:       5.874000e-06	    2.00       -835.49
 
 
+     37. O2 + CHAR  => CO2 
+         k:       2.860000e+07	    0.00      26250.00
+
+
+     38. 0.5O2 + CHAR  => CO 
+         k:       5.850729e+08	    0.00      31223.00
+         Reaction order of species O2                 equal to 0.7800
+         Reaction order of species CHAR               equal to 1.0000
+
+
+     39. CO2 + CHAR  => 2CO 
+         k:       2.000000e+10	    0.00      60000.00
+
+
+     40. CO2 + COH2S  => H2O + CO2 + CHAR 
+         k:       4.000000e+09	    0.00      53000.00
+
+
+     41. O2 + COH2S  => H2O + CO2 
+         k:       2.860000e+07	    0.00      25250.00
+
+
+     42. O2 + CH2OS  => H2O + CO2 
+         k:       2.860000e+07	    0.00      25250.00
+
+
+     43. O2 + CH4S  => 2H2O + CHAR 
+         k:       2.860000e+07	    0.00      25250.00
+
+
