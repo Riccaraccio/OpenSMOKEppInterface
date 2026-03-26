@@ -18,7 +18,8 @@ Dictionary CHEMKIN_PreProcessor
 		@Transport		tran.CHEMKIN.TRAN;
 		@Kinetics 		kinetics.CKI;
     @Solid        kinetics.solid;
-		
+	
+    @ReactionTables true;
 		@Output			kinetics;
 }
 

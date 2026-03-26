@@ -1,9 +1,11 @@
 MATERIAL BIOMASS
 
 SOLID
-BIOMASS CHAR
+BIOMASS CHAR MOIST ASH
 END                                                                                     
 
 REACTIONS
 BIOMASS=>0.8TAR+1H2O+1.2CHAR 				1.500E+14  0.000  47000.0
+MOIST  =>H2O                                                                                                                                                                               1.000E+00  1.000   8000.0 !ORIGINAL
+H2O  => MOIST                                                                                                                                                                               5.874E-06  2.000   -835.49 !INVERSE
 END
