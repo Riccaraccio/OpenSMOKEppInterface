@@ -1,3 +1,7 @@
+!!! NOTE
+!LVG replaced with C6H10O5 for gas phase chemistry
+!!!!!!!!
+
 MATERIAL BIOMASS
 
 SOLID
@@ -6,6 +10,7 @@ TGL     TANN    MOIST   ASH
 CELLA   HCE1    HCE2    LIGCC   LIGOH   LIG     ITANN
 CHAR    COH2S   CO2S    COS     CH3OHS  CH4S    C2H4S
 C6H5OHS CH2OS   H2S     C2H6S	LVGS	CHARO   COSTIFFS 
+BMOIST
 !PROTC   PROTH   PROTO   GNH3NO	
 !PROTOH  PROTCC  NH3S    HCNS     CHARN  
 END
@@ -53,10 +58,9 @@ DUPLICATE
 LVGS=>C6H10O5                                                                                                                                                                        	     6.000E+11  0.000  45000.0
 DUPLICATE
 
-!MOIST=>H2O                                                                                                                                                                               6.000E+02  -0.500   11525.0  !HUANG
 MOIST  =>H2O                                                                                                                                                                               1.000E+00  1.000   8000.0 !ORIGINAL
-
-H2O  => MOIST                                                                                                                                                                               5.874E-06  2.000   -835.49 !REVERSE
+H2O  => MOIST                                                                                                                                                                               5.874E-06  2.000   -835.49 !INVERSE
+BMOIST => H2O                                                                                                                                                                             5.130E+06   0.000   21010.0
 
 !PROTEINS!!!
 ! PROTO=>2.5PROTOH+.6PROTCC+25NH3+9NO+TARN+12.75C2H4+37.3CO+7.7CO2+71H2O                                                                                                                   .1000E+05   .000  15500.0     
@@ -68,10 +72,11 @@ H2O  => MOIST                                                                   
 ! HCNS=>HCN                                                                                                                                                                                   5.5000   .000  13500.0
 ! GNH3NO=>NH3+NO                                                                                                                                                                           .2500E+11   .000  27800.0
 
-!CHAR CONVERSION
+!CHAR CONVERSION Hobbs et al 1992 (probably RC)
+CHAR + H2O => CO + H2                                                                                                                                                                    2.000E+13  0.000  60000.0 
 CHAR + O2 => CO2                                                                                                                                                                         2.860E+10  0.000  26250.0
 CHAR + 0.5 O2 => CO                                                                                                                                                                      1.280E+11  0.000  31223.0  
-FORD / O2 0.78 /   
+FORD / O2 0.78 /
 
 CHAR + CO2 => 2 CO                                                                                                                                                                       2.000E+13  0.000  60000.0
 COH2S + CO2 =>CHAR + CO2 + H2O                                                                                                                                                           4.000E+12  0.000  53000.0
