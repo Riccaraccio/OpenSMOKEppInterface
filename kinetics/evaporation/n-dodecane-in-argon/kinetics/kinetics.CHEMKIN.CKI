@@ -1,0 +1,15 @@
+ELEMENTS
+C
+H
+O
+AR
+END
+
+SPECIES
+NC12H26                       AR                            O2                            
+END
+
+REACTIONS
+
+END
+

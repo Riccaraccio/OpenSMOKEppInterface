@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<opensmoke version="0.1a">
+<Properties>
+  <Author>undefined</Author>
+  <Place>undefined</Place>
+  <Date>2026-07-30</Date>
+  <Time>13:21:18</Time>
+  <Comments>
+no comments
+  </Comments>
+</Properties>
+<NumberOfElements>
+4
+</NumberOfElements>
+<NamesOfElements>
+C H O AR 
+</NamesOfElements>
+<AtomicComposition>
+1.2000000000e+01 2.6000000000e+01 0. 0. 
+0. 0. 0. 1.0000000000e+00 
+0. 0. 2.0000000000e+00 0. 
+1.2000000000e+01 2.6000000000e+01 0. 0. 
+</AtomicComposition>
+<NumberOfSpecies>
+4
+</NumberOfSpecies>
+<NamesOfSpecies>
+NC12H26 AR O2 NC12H26(L) 
+</NamesOfSpecies>
+<Thermodynamics type="NASA">
+<NASA-coefficients>
+3.614140940000000057e+01 6.110458829999999841e-02 -2.246410730000000127e-05 3.931824410000000180e-09 -2.733493630000000114e-13 -5.403591859999999724e+04 -1.568319600000000094e+02 -2.666277050000000148e+00 1.473438920000000041e-01 -9.433019339999999407e-05 3.054889329999999853e-08 -3.970164490000000207e-12 -4.006515140000000247e+04 5.320333500000000271e+01 3.000000000000000000e+02 3.500000000000000000e+03 1.800000000000000000e+03 1.703399965763092041e+02
+2.500139309999999782e+00 -3.982901999999999860e-07 3.458860819999999813e-10 -1.182939709999999920e-13 1.385531740000000005e-17 -7.454078909999999496e+02 4.378973620000000011e+00 2.499744890000000108e+00 1.525691319999999917e-06 -3.173592310000000155e-09 2.743070570000000030e-12 -8.585119220000000101e-16 -7.453432070000000067e+02 4.380798170000000269e+00 2.000000000000000000e+02 3.500000000000000000e+03 8.200000000000000000e+02 3.994800186157227273e+01
+2.820124079999999811e+00 2.482113570000000092e-03 -1.512020940000000031e-06 4.485562010000000235e-10 -4.873056680000000308e-14 -9.313501479999999901e+02 7.949145520000000076e+00 3.744039209999999951e+00 -2.797401469999999998e-03 9.801225580000000323e-06 -1.032596429999999949e-08 3.799312469999999865e-12 -1.060698270000000093e+03 3.821326459999999869e+00 2.000000000000000000e+02 3.500000000000000000e+03 7.000000000000000000e+02 3.199799919128417969e+01
+3.614140950000000174e+01 6.110458829999999841e-02 -2.246410730000000127e-05 3.931824400000000342e-09 -2.733493619999999927e-13 -5.403591859999999724e+04 -1.568319600000000094e+02 -2.666277050000000148e+00 1.473438920000000041e-01 -9.433019339999999407e-05 3.054889329999999853e-08 -3.970164490000000207e-12 -4.006515140000000247e+04 5.320333500000000271e+01 3.000000000000000000e+02 3.500000000000000000e+03 1.800000000000000000e+03 1.703399965763092041e+02
+</NASA-coefficients>
+</Thermodynamics>
+<Transport type="none">
+</Transport>
+<NumberOfMaterials>
+1
+</NumberOfMaterials>
+<NumberOfLiquidSpecies>
+1
+</NumberOfLiquidSpecies>
+<LiquidSpecies>
+NC12H26(L)
+</LiquidSpecies>
+<MaterialDescription index="1" name="LIQUIDMIX">
+1
+NC12H26(L) 1
+</MaterialDescription>
+<Kinetics type="OpenSMOKE" version="01-02-2014">
+<MaterialKinetics index="1" name="LIQUIDMIX">
+<NumberOfSpecies>
+4
+</NumberOfSpecies>
+<NumberOfReactions>
+0
+</NumberOfReactions>
+<Irreversible>
+0
+</Irreversible>
+<Reversible>
+0
+</Reversible>
+<Reversible-Thermodynamics>
+0
+</Reversible-Thermodynamics>
+<Reversible-Explicit>
+0
+</Reversible-Explicit>
+<ThreeBody>
+0
+</ThreeBody>
+<FallOff>
+0
+<Lindemann>
+0
+</Lindemann>
+<Troe>
+0
+</Troe>
+<SRI>
+0
+</SRI>
+</FallOff>
+<CABR>
+0
+<Lindemann>
+0
+</Lindemann>
+<Troe>
+0
+</Troe>
+<SRI>
+0
+</SRI>
+</CABR>
+<Chebyshev>
+0
+</Chebyshev>
+<PressureLog>
+0
+</PressureLog>
+<ExtendedPressureLog>
+0
+</ExtendedPressureLog>
+<ExtendedFallOff>
+0
+</ExtendedFallOff>
+<FIT1>
+0
+</FIT1>
+<JanevLanger>
+0
+</JanevLanger>
+<LandauTeller>
+0
+</LandauTeller>
+<UsrProg>
+0
+</UsrProg>
+<UsrProg-Labels>
+0
+</UsrProg-Labels>
+<ReactionsNeedingConversion>
+0
+</ReactionsNeedingConversion>
+<TypeOfKinetics>
+chemkin_conventional
+</TypeOfKinetics>
+<ThermodynamicReversibleReactions>
+0
+</ThermodynamicReversibleReactions>
+<KineticParameters>
+<Direct>
+<lnA>
+0
+
+</lnA>
+<Beta>
+0
+
+</Beta>
+<E_over_R>
+0
+
+</E_over_R>
+<ForwardKineticOrder>
+0
+
+</ForwardKineticOrder>
+</Direct>
+</KineticParameters>
+<Stoichiometry type="OpenSMOKE" version="01-02-2014">
+4
+0 0 0 0 
+4
+0 0 0 0 
+4
+0 0 0 0 
+4
+0 0 0 0 
+4
+0 0 0 0 
+4
+0 0 0 0 
+4
+0 0 0 0 
+4
+0 0 0 0 
+4
+0 0 0 0 
+4
+0 0 0 0 
+4
+0 0 0 0 
+4
+0 0 0 0 
+4
+0 0 0 0 
+4
+0 0 0 0 
+4
+0 0 0 0 
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+
+0
+0
+</Stoichiometry>
+<GlobalReactions type="none">
+</GlobalReactions>
+</MaterialKinetics>
+</Kinetics>
+</opensmoke>
