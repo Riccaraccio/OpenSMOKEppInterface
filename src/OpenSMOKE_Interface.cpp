@@ -409,6 +409,18 @@ void OpenSMOKE_GasProp_HeatCapacity_PureSpecies (double * cp) {
     cp[i] /= OpenSMOKE_MW (i);
 }
 
+double OpenSMOKE_GasProp_Enthalpy (const double* x) {
+  double MW = OpenSMOKE_MolecularWeight_From_MoleFractions (x);
+  double h = thermodynamicsMapXML->hMolar_Mixture_From_MoleFractions(x);
+  return h/MW;
+}
+
+void OpenSMOKE_GasProp_Enthalpy_PureSpecies (double * h) {
+  thermodynamicsMapXML->hMolar_Species (h);
+  for (unsigned int i=0; i<OpenSMOKE_NumberOfSpecies(); i++)
+    h[i] /= OpenSMOKE_MW (i);
+}
+
 void OpenSMOKE_GasProp_Dmix (const double* x, double* r) {
   const double baseline_diffusion = 1e-10;
   double Diffs[thermodynamicsMapXML->NumberOfSpecies()];

@@ -138,6 +138,14 @@ OpenSMOKE_GasProp_HeatCapacity_PureSpecies = OpenSMOKE.OpenSMOKE_GasProp_HeatCap
 OpenSMOKE_GasProp_HeatCapacity_PureSpecies.argtypes = [POINTER(c_double)]
 OpenSMOKE_GasProp_HeatCapacity_PureSpecies.restype = None
 
+OpenSMOKE_GasProp_Enthalpy = OpenSMOKE.OpenSMOKE_GasProp_Enthalpy
+OpenSMOKE_GasProp_Enthalpy.argtypes = [POINTER(c_double)]
+OpenSMOKE_GasProp_Enthalpy.restype = c_double
+
+OpenSMOKE_GasProp_Enthalpy_PureSpecies = OpenSMOKE.OpenSMOKE_GasProp_Enthalpy_PureSpecies
+OpenSMOKE_GasProp_Enthalpy_PureSpecies.argtypes = [POINTER(c_double)]
+OpenSMOKE_GasProp_Enthalpy_PureSpecies.restype = None
+
 OpenSMOKE_GasProp_Dmix = OpenSMOKE.OpenSMOKE_GasProp_Dmix
 OpenSMOKE_GasProp_Dmix.argtypes = [POINTER(c_double), c_int]
 OpenSMOKE_GasProp_Dmix.restype = c_double

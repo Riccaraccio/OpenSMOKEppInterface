@@ -351,6 +351,29 @@ double
 void
   OpenSMOKE_GasProp_HeatCapacity_PureSpecies (double * cp);
 
+/**
+### *OpenSMOKE_GasProp_Enthalpy()*: Specific enthalpy of the gas phase mixture
+
+The total (sensible plus formation) enthalpy in J/kg, with the CHEMKIN
+reference state of the thermodynamic data. Set the temperature with
+`OpenSMOKE_GasProp_SetTemperature()` before the call.
+
+* *x*: mole fractions in gas phase
+*/
+double
+  OpenSMOKE_GasProp_Enthalpy (const double* x);
+
+/**
+### *OpenSMOKE_GasProp_Enthalpy_PureSpecies()*: Specific enthalpy of species in gas phase
+
+The total (sensible plus formation) enthalpy of each species in J/kg, at the
+temperature of `OpenSMOKE_GasProp_SetTemperature()`.
+
+* *h*: (result) array of enthalpies, one for each gas species
+*/
+void
+  OpenSMOKE_GasProp_Enthalpy_PureSpecies (double * h);
+
 /** 
 ### *OpenSMOKE_GasProp_Dmix()* Mixture diffusion coefficients
 
