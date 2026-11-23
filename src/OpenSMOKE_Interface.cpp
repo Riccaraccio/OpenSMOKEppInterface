@@ -4,6 +4,7 @@
 
 // OpenSMOKE++ Definitions
 #include "OpenSMOKEpp"
+#include "math/OpenSMOKEFunctions.h"
 #include "math/PhysicalConstants.h"
 
 // CHEMKIN maps
@@ -26,6 +27,10 @@
 #include "math/native-ode-solvers/MultiValueSolver"
 #include "math/external-ode-solvers/ODE_Parameters.h"
 
+// Direct Relation Graph (DRG) mechanism reduction
+#include "OpenSMOKE_DRG.h"
+#include <string>
+
 // Global pointers
 OpenSMOKE::ThermodynamicsMap_CHEMKIN*           thermodynamicsMapXML;
 OpenSMOKE::KineticsMap_CHEMKIN*                 kineticsMapXML;
@@ -39,6 +44,8 @@ OpenSMOKE::KineticsMap_Solid_CHEMKIN*       kineticsSolidMapXML;
 
 OpenSMOKE::ThermodynamicsMap_Surface_CHEMKIN* thermodynamicsSurfaceMapXML;
 OpenSMOKE::KineticsMap_Surface_CHEMKIN* kineticsSurfaceMapXML;
+
+static OpenSMOKE::DRG* drg;
 
 speciesMap* species_map;
 mixtureL* liqmix;
@@ -72,6 +79,7 @@ void OpenSMOKE_Init (void) {
   kineticsSolidMapXML = NULL;
   species_map = NULL;
   liqmix = NULL;
+  drg = NULL;
 }
 
 void OpenSMOKE_InitODESolver (void) {
@@ -90,6 +98,7 @@ void OpenSMOKE_Clean (void) {
   cleanptr (kineticsSolidMapXML);
   cleanptr (thermodynamicsSurfaceMapXML);
   cleanptr (kineticsSurfaceMapXML);
+  cleanptr (drg);
   //cleanptr (species_map); // FIXME: strange behavior
   //cleanptr (liqmix);      // FIXME: strange behavior
 }
@@ -670,7 +679,7 @@ void OpenSMOKE_ODESolver
   //ymins[neq-1] = -1e-32;
   //ymaxs[neq-1] = +1e+32;
 
-  //// Set minimum and maximum values
+  // Set minimum and maximum values
   //ode_solver.SetMinimumValues(ymins);
   //ode_solver.SetMaximumValues(ymaxs);
 
@@ -691,6 +700,59 @@ void OpenSMOKE_ODESolver
   {
     std::cout<< "Solution not found." << std::endl;
   }
+}
+
+void OpenSMOKE_DRG_Init (const char** key_species, int nkey,
+                         const double* eps, const double* T, int nT,
+                         double T_threshold, double R_threshold) {
+  if (thermodynamicsMapXML == NULL || kineticsMapXML == NULL)
+    OpenSMOKE::FatalErrorMessage("Must OpenSMOKE_Init before initializing DRG");
+
+  std::vector<std::string> keySpecies (key_species, key_species + nkey);
+  std::vector<double> temperatures (T, T + nT);
+  std::vector<double> epsilons (eps, eps + nT);
+
+  cleanptr (drg); // a second call replaces the old object
+  drg = new OpenSMOKE::DRG(*thermodynamicsMapXML, *kineticsMapXML, keySpecies, temperatures,
+      T_threshold, R_threshold, epsilons);
+}
+
+void OpenSMOKE_DRG_Analysis (double T, double P, const double* c) {
+  if (drg != NULL)
+    drg->Analysis(T, P, c);
+  else
+   OpenSMOKE::FatalErrorMessage("Must Initialize DRG before calling Analysis");
+}
+
+int OpenSMOKE_DRG_NumberImportantSpecies (void) {
+  if (drg != NULL)
+    return drg->number_important_species();
+  else
+    OpenSMOKE::FatalErrorMessage("Must Initialize DRG before calling Analysis");
+  return 0;
+}
+
+int OpenSMOKE_DRG_NumberImportantReactions (void) {
+  if (drg != NULL)
+    return drg->number_important_reactions();
+  else
+    OpenSMOKE::FatalErrorMessage("Must Initialize DRG before calling Analysis");
+  return 0;
+}
+
+const int* OpenSMOKE_DRG_IndicesImportantSpecies (void) {
+  if (drg != NULL)
+    return drg->indices_important_species().data();
+  else
+    OpenSMOKE::FatalErrorMessage("Must Initialize DRG before calling Analysis");
+  return 0;
+}
+
+void OpenSMOKE_DRG_ReducedFormationRates (const double* c, double* R) {
+  if (drg != NULL)
+    drg->ReducedFormationRates(c, R);
+  else
+    OpenSMOKE::FatalErrorMessage("Must Initalize DRG before calling Analysis");
 }
 
 #ifdef __cplusplus

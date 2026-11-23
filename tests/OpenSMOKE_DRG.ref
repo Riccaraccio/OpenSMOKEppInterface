@@ -1,0 +1,7 @@
+eps = 0: ns = 13, nr = 45
+eps = 0: max |dR| = 0, dQR = 0
+eps = 0.01: ns = 11, nr = 35
+eps = 0.05: ns = 11, nr = 35
+eps = 0.1: ns = 10, nr = 25
+eps = 0.3: ns = 9, nr = 20
+T = 250 K: ns = 2, nr = 0

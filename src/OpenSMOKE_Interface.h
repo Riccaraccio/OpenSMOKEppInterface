@@ -787,6 +787,84 @@ double
 void
   OpenSMOKE_ODESolver (odefunction ode, unsigned int neq, double dt, double * y, void * args);
 
+/**
+## Directed Relation Graph (DRG)
+
+Reduction of the gas-phase mechanism for each local state. Call
+`OpenSMOKE_DRG_Analysis()` before each reduced solve. The other DRG
+functions use the result of the last analysis.
+*/
+
+/**
+### *OpenSMOKE_DRG_Init()*: Create the DRG object
+
+Call this function after `OpenSMOKE_ReadKinetics()`.
+
+* *key_species*: names of the key species, always important
+* *nkey*: number of key species
+* *eps*: DRG thresholds, one for each entry of *T*
+* *T*: upper temperature bounds [K] of the intervals, in ascending order.
+  The analysis uses `eps[i]` for the first `i` with `T < T[i]`. Above the
+  last bound, it uses 1e-2.
+* *nT*: number of entries of *eps* and *T*
+* *T_threshold*: temperature [K]. Below it, only the key species are
+  important and all the reactions are unimportant
+* *R_threshold*: production and destruction rate [kmol/m3/s]. A species
+  with both rates below it does not add species to the graph
+*/
+void
+  OpenSMOKE_DRG_Init (const char** key_species, int nkey,
+                      const double* eps, const double* T, int nT,
+                      double T_threshold, double R_threshold);
+
+/**
+### *OpenSMOKE_DRG_Analysis()*: Find the important species and reactions
+
+* *T*: temperature [K]
+* *P*: pressure [Pa]
+* *c*: concentrations of all the gas species [kmol/m3]
+*/
+void
+  OpenSMOKE_DRG_Analysis (double T, double P, const double* c);
+
+/**
+### *OpenSMOKE_DRG_NumberImportantSpecies()*: Number of important species
+*/
+int
+  OpenSMOKE_DRG_NumberImportantSpecies (void);
+
+/**
+### *OpenSMOKE_DRG_NumberImportantReactions()*: Number of important reactions
+*/
+int
+  OpenSMOKE_DRG_NumberImportantReactions (void);
+
+/**
+### *OpenSMOKE_DRG_IndicesImportantSpecies()*: Indices of the important species
+
+The indices are zero-based and in ascending order. The array has
+`OpenSMOKE_DRG_NumberImportantSpecies()` entries.
+
+Caution: the next analysis changes the array, and the pointer can become
+invalid. Copy the indices, or use them before the next analysis.
+*/
+const int*
+  OpenSMOKE_DRG_IndicesImportantSpecies (void);
+
+/**
+### *OpenSMOKE_DRG_ReducedFormationRates()*: Formation rates of the reduced mechanism
+
+The rates of the unimportant reactions are zero. The formation rate of
+each unimportant species is thus zero. Call
+`OpenSMOKE_GasProp_SetTemperature()` and `OpenSMOKE_GasProp_SetPressure()`
+before this function, as for `OpenSMOKE_GasProp_ReactionRates()`.
+
+* *c*: concentrations of all the gas species [kmol/m3]
+* *R*: formation rates of all the gas species [kmol/m3/s] (to be computed)
+*/
+void
+  OpenSMOKE_DRG_ReducedFormationRates (const double* c, double* R);
+
 #ifdef __cplusplus
 }
 #endif

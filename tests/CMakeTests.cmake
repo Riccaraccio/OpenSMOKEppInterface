@@ -30,6 +30,14 @@ add_test (NAME OpenSMOKE_SurfaceKinetics
             ./OpenSMOKE_SurfaceKinetics 2> OpenSMOKE_SurfaceKinetics.log
             diff OpenSMOKE_SurfaceKinetics.log ../tests/OpenSMOKE_SurfaceKinetics.ref")
 
+add_executable (OpenSMOKE_DRG tests/OpenSMOKE_DRG.cpp)
+target_link_libraries (OpenSMOKE_DRG PRIVATE opensmoke)
+
+add_test (NAME OpenSMOKE_DRG
+          COMMAND bash -c "
+            ./OpenSMOKE_DRG 2> OpenSMOKE_DRG.log
+            diff OpenSMOKE_DRG.log ../tests/OpenSMOKE_DRG.ref")
+
 add_test (NAME OpenSMOKE_PythonInterface
           COMMAND bash -c "python3 ../tests/OpenSMOKE_PythonInterface.py")
 
