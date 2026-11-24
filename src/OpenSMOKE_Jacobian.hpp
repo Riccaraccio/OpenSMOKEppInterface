@@ -69,6 +69,17 @@ GasJacobian::GasJacobian(OpenSMOKE::ThermodynamicsMap_CHEMKIN& thermodynamicsMap
 	}
 }
 
+// Orders a < 1: OpenSMOKE++ replaces c^a with a regularized function
+// (StoichiometricMap::ProductOfConcentrationsForNonElementaryReactions):
+// gamma = m (c + m/delta)^a + (1 - m) cstar^(a-1) c, m = (tanh(K c + H) + 1)/2
+// gamma is finite at c = 0 and its derivative also. The constants below
+// must stay equal to the constants of OpenSMOKE++.
+static const double gamma_cstar_ = 1.e-8;
+static const double gamma_alfa_ = 1.e-5;
+static const double gamma_H_ = 1.50*std::log(gamma_alfa_/(1. - gamma_alfa_));
+static const double gamma_K_ = 2.00*std::log((1. - gamma_alfa_)/gamma_alfa_)/gamma_cstar_;
+static const double gamma_delta_ = 1.e9;
+
 double GasJacobian::Power(const double c, const double a)
 {
 	if (a == 1.)
@@ -77,26 +88,35 @@ double GasJacobian::Power(const double c, const double a)
 		return c*c;
 	else if (a == 3.)
 		return c*c*c;
-	else if (a == 0.5)
-		return std::sqrt(c);
+	else if (a < 1.)
+	{
+		const double m = (std::tanh(gamma_K_*c + gamma_H_) + 1.)/2.;
+		return m*std::pow(c + m/gamma_delta_, a) + (1. - m)*std::pow(gamma_cstar_, a - 1.)*c;
+	}
 	else
 		return std::pow(c, a);
 }
 
 double GasJacobian::DerivativeOfPower(const double c, const double a)
 {
-	// c^(a-1) is infinite at c = 0 for a < 1 and not defined for c < 0
-	// with a non-integer order: use max(c, c_floor) in this factor only
-	const double c_floor = 1.e-20;
-
 	if (a == 1.)
 		return 1.;
 	else if (a == 2.)
 		return 2.*c;
 	else if (a == 3.)
 		return 3.*c*c;
+	else if (a < 1.)
+	{
+		const double t = std::tanh(gamma_K_*c + gamma_H_);
+		const double m = (t + 1.)/2.;
+		const double dm = gamma_K_*(1. - t*t)/2.;
+		const double u = c + m/gamma_delta_;
+		const double s = std::pow(gamma_cstar_, a - 1.);
+		return dm*std::pow(u, a) + m*a*std::pow(u, a - 1.)*(1. + dm/gamma_delta_)
+			- dm*s*c + (1. - m)*s;
+	}
 	else
-		return a*std::pow(std::max(c, c_floor), a - 1.);
+		return a*std::pow(c, a - 1.);
 }
 
 void GasJacobian::AddToColumn(const unsigned int r, const unsigned int j, const double d, double* dRdc)

@@ -75,7 +75,10 @@ static double ColumnError (const double* J, const double* c, int n) {
   return err;
 }
 
-static void TestMechanism (const char* kinfolder, double T, double P) {
+// nstates: 3, or 2 for a mechanism with non-integer orders (state 2 has
+// c = 0 and c < 0, where the RHS of such a mechanism is not defined)
+static void TestMechanism (const char* kinfolder, double T, double P,
+                           int nstates) {
   OpenSMOKE_Init();
   OpenSMOKE_ReadKinetics (kinfolder);
   const int n = OpenSMOKE_NumberOfSpecies();
@@ -84,12 +87,12 @@ static void TestMechanism (const char* kinfolder, double T, double P) {
   OpenSMOKE_GasProp_SetTemperature (T);
   OpenSMOKE_GasProp_SetPressure (P);
 
-  // Three states: all species equal; all species different; some species
+  // Three states: all species equal; species from 1e-4 to 1; some species
   // at 0 and one below 0 (the RHS does not clip the mass fractions)
   std::vector<double> x (n), c (n), J (n*n);
-  for (int state = 0; state < 3; state++) {
+  for (int state = 0; state < nstates; state++) {
     for (int i = 0; i < n; i++)
-      x[i] = state == 0 ? 1. : 1.5 + sin (1. + i);
+      x[i] = state == 0 ? 1. : pow (10., -2.*(1. + sin (1. + i)));
     if (state == 2) {
       for (int i = 0; i < n; i += 3)
         x[i] = 0.;
@@ -124,8 +127,10 @@ static void TestMechanism (const char* kinfolder, double T, double P) {
 }
 
 int main () {
-  TestMechanism ("../kinetics/skeletal/hydrogen/kinetics", 1500., 101325.);
-  TestMechanism ("../kinetics/skeletal/methanol/kinetics", 1500., 101325.);
-  TestMechanism ("../kinetics/biomass/Solid-gas-88/kinetics", 1500., 101325.);
+  TestMechanism ("../kinetics/skeletal/hydrogen/kinetics", 1500., 101325., 3);
+  TestMechanism ("../kinetics/skeletal/methanol/kinetics", 1500., 101325., 3);
+  TestMechanism ("../kinetics/biomass/Solid-gas-88/kinetics", 1500., 101325., 3);
+  // FORD orders 0.25, 0.5, 1.25, 1.5 (regularized below 1 by OpenSMOKE++)
+  TestMechanism ("../kinetics/biomass/dummy-solid-gas/kinetics", 1500., 101325., 2);
   return 0;
 }

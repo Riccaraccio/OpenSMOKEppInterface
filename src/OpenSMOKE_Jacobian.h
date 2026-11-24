@@ -52,12 +52,12 @@ public:
 private:
 
 	/**
-	*@brief c^a, as StoichiometricMap::ProductOfConcentrations
+	*@brief c^a, as StoichiometricMap::ProductOfConcentrations (regularized for a < 1)
 	*/
 	static double Power(const double c, const double a);
 
 	/**
-	*@brief d(c^a)/dc. For orders other than 1, 2, 3 the function uses max(c, c_floor)
+	*@brief d(c^a)/dc (regularized for a < 1, finite at c = 0)
 	*/
 	static double DerivativeOfPower(const double c, const double a);
 

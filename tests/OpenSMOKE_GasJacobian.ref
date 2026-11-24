@@ -10,3 +10,6 @@
   state 0: status 0, column error < 1e-05: ok
   state 1: status 0, column error < 1e-05: ok
   state 2: status 0, column error < 1e-05: ok
+../kinetics/biomass/dummy-solid-gas/kinetics: 8 species
+  state 0: status 0, column error < 1e-05: ok
+  state 1: status 0, column error < 1e-05: ok
