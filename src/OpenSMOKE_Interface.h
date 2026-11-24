@@ -449,6 +449,27 @@ species in gas phase (to be computed)
 void OpenSMOKE_GasProp_FormationRates (double * R);
 
 /**
+### *OpenSMOKE_GasProp_FormationRatesJacobian()*: Jacobian of the formation rates in gas phase
+
+Derivatives of the formation rates with respect to the concentrations, at
+constant T, P and total concentration (cTot = sum of c). Call
+`OpenSMOKE_GasProp_SetTemperature()` and `OpenSMOKE_GasProp_SetPressure()`
+first. After the call, the kinetic map holds the rates at *c*, as after
+`OpenSMOKE_GasProp_ReactionRates()`. The function does not support CABR
+reactions (it returns 1) and the extended fall-off and extended PLOG
+reactions (it cannot detect them).
+
+* *c*: concentration [kmol/m3] of each chemical species in gas phase
+* *dRdc*: dense Jacobian, column-major, NS x NS:
+dRdc[i + NS*j] = dR_i/dc_j [1/s] (to be computed)
+
+Returns 0, or 1 if the mechanism has a reaction type that the function does
+not support (dRdc is then not set).
+*/
+int
+  OpenSMOKE_GasProp_FormationRatesJacobian (const double * c, double * dRdc);
+
+/**
 ### *OpenSMOKE_GasProp_HeatRelease()*: Compute the heat released from the gas phase reactions
 
 * *R*: formation rate [kmol/m3/s] of each chemical species in gas phase

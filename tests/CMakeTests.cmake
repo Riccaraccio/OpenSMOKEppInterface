@@ -44,3 +44,11 @@ add_test (NAME OpenSMOKE_PythonInterface
 add_test (NAME OpenSMOKE_PythonInterfaceSolid
           COMMAND bash -c "python3 ../tests/OpenSMOKE_PythonInterfaceSolid.py")
 
+
+add_executable (OpenSMOKE_GasJacobian tests/OpenSMOKE_GasJacobian.cpp)
+target_link_libraries (OpenSMOKE_GasJacobian PRIVATE opensmoke)
+
+add_test (NAME OpenSMOKE_GasJacobian
+          COMMAND bash -c "
+            ./OpenSMOKE_GasJacobian 2> OpenSMOKE_GasJacobian.log
+            diff OpenSMOKE_GasJacobian.log ../tests/OpenSMOKE_GasJacobian.ref")

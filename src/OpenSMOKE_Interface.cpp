@@ -31,6 +31,9 @@
 #include "OpenSMOKE_DRG.h"
 #include <string>
 
+// Analytical Jacobian of the gas formation rates
+#include "OpenSMOKE_Jacobian.h"
+
 // Global pointers
 OpenSMOKE::ThermodynamicsMap_CHEMKIN*           thermodynamicsMapXML;
 OpenSMOKE::KineticsMap_CHEMKIN*                 kineticsMapXML;
@@ -46,6 +49,7 @@ OpenSMOKE::ThermodynamicsMap_Surface_CHEMKIN* thermodynamicsSurfaceMapXML;
 OpenSMOKE::KineticsMap_Surface_CHEMKIN* kineticsSurfaceMapXML;
 
 static OpenSMOKE::DRG* drg;
+static OpenSMOKE::GasJacobian* gas_jacobian;
 
 // The last temperature given to the kinetic map of the gas. The DRG needs it
 // to restore the kinetic constants of the full mechanism (see
@@ -85,6 +89,7 @@ void OpenSMOKE_Init (void) {
   species_map = NULL;
   liqmix = NULL;
   drg = NULL;
+  gas_jacobian = NULL;
 }
 
 void OpenSMOKE_InitODESolver (void) {
@@ -104,6 +109,7 @@ void OpenSMOKE_Clean (void) {
   cleanptr (thermodynamicsSurfaceMapXML);
   cleanptr (kineticsSurfaceMapXML);
   cleanptr (drg);
+  cleanptr (gas_jacobian);
   //cleanptr (species_map); // FIXME: strange behavior
   //cleanptr (liqmix);      // FIXME: strange behavior
 }
@@ -310,6 +316,17 @@ void OpenSMOKE_GasProp_ReactionRates (const double * c) {
 
 void OpenSMOKE_GasProp_FormationRates (double * R) {
   kineticsMapXML->FormationRates(R);
+}
+
+int OpenSMOKE_GasProp_FormationRatesJacobian (const double * c, double * dRdc) {
+  if (gas_jacobian == NULL)
+    gas_jacobian = new OpenSMOKE::GasJacobian(*thermodynamicsMapXML, *kineticsMapXML);
+  if (!gas_jacobian->is_supported())
+    return 1;
+  if (drg != NULL)
+    drg->RestoreKineticConstants(gas_T_last);
+  gas_jacobian->Compute(c, dRdc);
+  return 0;
 }
 
 void OpenSMOKE_SolProp_KineticConstants (void) {

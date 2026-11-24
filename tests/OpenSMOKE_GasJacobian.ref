@@ -1,0 +1,12 @@
+../kinetics/skeletal/hydrogen/kinetics: 21 species
+  state 0: status 0, column error < 1e-05: ok
+  state 1: status 0, column error < 1e-05: ok
+  state 2: status 0, column error < 1e-05: ok
+../kinetics/skeletal/methanol/kinetics: 20 species
+  state 0: status 0, column error < 1e-05: ok
+  state 1: status 0, column error < 1e-05: ok
+  state 2: status 0, column error < 1e-05: ok
+../kinetics/biomass/Solid-gas-88/kinetics: 87 species
+  state 0: status 0, column error < 1e-05: ok
+  state 1: status 0, column error < 1e-05: ok
+  state 2: status 0, column error < 1e-05: ok
