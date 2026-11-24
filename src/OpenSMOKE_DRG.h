@@ -93,8 +93,19 @@ public:
   /**
    *@brief Formation rates [kmol/m3/s] of the reduced mechanism, from the last Analysis
    *       Set T and P on the maps before you call this function.
+   *       The function computes the kinetic constants of the important reactions only
+   *       (as laminarSMOKE++). The kinetic map then holds 1e-64 for the constants of the
+   *       unimportant reactions, and its cache marks the constants as valid. Call
+   *       RestoreKineticConstants() before a full use of the kinetic map.
    */
   void ReducedFormationRates(const double* c, double* R);
+
+  /**
+   *@brief Makes the kinetic map compute all the kinetic constants again at its next use,
+   *       if ReducedFormationRates() changed them. The map keeps the temperature T.
+   *@param T temperature [K] that the kinetic map must hold after the call
+   */
+  void RestoreKineticConstants(const double T);
 
 private:
 
@@ -137,6 +148,8 @@ private:
 	Eigen::SparseMatrix<double> 			nu_sparse_;		/**< sparse matrix containing the net stoichiometric coefficients, (NS x NR) */
 	std::vector< Eigen::SparseMatrix<double> >	nu_times_delta_;	/**< vector of sparse matrices (NS x NS) */
 	Eigen::SparseMatrix<double> 			delta_sparse_;		/**< delta matrix (NS x NR) */
+
+  bool reduced_constants_;   /**< true if the kinetic map holds the constants of the reduced mechanism */
 
   std::vector<double>  epsilons_;
   std::vector<double>  temperatures_;

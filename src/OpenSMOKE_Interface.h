@@ -859,6 +859,13 @@ each unimportant species is thus zero. Call
 `OpenSMOKE_GasProp_SetTemperature()` and `OpenSMOKE_GasProp_SetPressure()`
 before this function, as for `OpenSMOKE_GasProp_ReactionRates()`.
 
+The function computes the kinetic constants of the important reactions only.
+The kinetic map then holds wrong constants for the unimportant reactions.
+`OpenSMOKE_GasProp_ReactionRates()`, `OpenSMOKE_GasProp_KineticConstants()`,
+`OpenSMOKE_DRG_Analysis()` and `OpenSMOKE_DRG_Init()` restore the constants
+of the full mechanism before they use the map. Do not use the kinetic map of
+the gas in another way after this function.
+
 * *c*: concentrations of all the gas species [kmol/m3]
 * *R*: formation rates of all the gas species [kmol/m3/s] (to be computed)
 */

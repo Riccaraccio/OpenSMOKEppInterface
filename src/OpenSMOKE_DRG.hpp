@@ -13,6 +13,7 @@ DRG::DRG(OpenSMOKE::ThermodynamicsMap_CHEMKIN& thermodynamicsMap,
 
   rNet_.resize(NR_); rNet_.setZero();
   rReduced_.resize(NR_); rReduced_.setZero();
+  reduced_constants_ = false;
   r_.resize(NS_, NS_);
   numerator_.resize(NS_);
   denominator_.resize(NS_);
@@ -185,6 +186,7 @@ void DRG::PairWiseErrorMatrix(const double T, const double P_Pa, const double* c
   // We have to pass those data to the thermodynamic and kinetic maps
   thermodynamicsMap_.SetTemperature(T);
   thermodynamicsMap_.SetPressure(P_Pa);
+  RestoreKineticConstants(T);   // the analysis needs the constants of all the reactions
   kineticsMap_.SetTemperature(T);
   kineticsMap_.SetPressure(P_Pa);
 
@@ -364,10 +366,30 @@ void DRG::ParsePairWiseErrorMatrix(const double epsilon, const double T)
 
 void DRG::ReducedFormationRates(const double* c, double* R)
 {
-  kineticsMap_.ReactionRates(c);                 // all constants, normal cache
+  // Kinetic constants of the important reactions only. If the cache of the map
+  // is valid (same T as the last call), the map keeps its constants. The rates
+  // of the unimportant reactions are set to zero below in all cases.
+  kineticsMap_.KineticConstants(important_reactions_steps_);
+  reduced_constants_ = true;
+
+  // ReactionRates() calls the full KineticConstants(), but the cache flag is
+  // now false, so it does not compute the constants again.
+  kineticsMap_.ReactionRates(c);
   kineticsMap_.GiveMeReactionRates(rReduced_.data());
   for (int i = 0; i < indices_unimportant_reactions_.size(); i++)
     rReduced_(indices_unimportant_reactions_(i)) = 0.;
   kineticsMap_.stoichiometry().FormationRatesFromReactionRates(R, rReduced_.data());
+}
+
+void DRG::RestoreKineticConstants(const double T)
+{
+  if (reduced_constants_ == false)
+    return;
+
+  // The map sets its cache flag only when T differs from the T of the call
+  // before. Two calls with two different values always set it.
+  kineticsMap_.SetTemperature(T*(1. + 1.e-6));
+  kineticsMap_.SetTemperature(T);
+  reduced_constants_ = false;
 }
 

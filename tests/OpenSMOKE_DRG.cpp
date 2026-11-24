@@ -12,7 +12,7 @@ int main () {
   const char* key_species[] = {"CH3OH", "O2"};
 
   // CH3OH/air with a small radical pool, at 1500 K and 1 atm
-  double x[NS], c[NS], R[NS], Rred[NS];
+  double x[NS], c[NS], R[NS], Rred[NS], Rafter[NS];
   for (int i=0; i<NS; i++)
     x[i] = 0.;
   x[OpenSMOKE_IndexOfSpecies ("CH3OH")] = 0.12;
@@ -40,7 +40,21 @@ int main () {
     double Tmax = 1e5;
     OpenSMOKE_DRG_Init (key_species, 2, &eps, &Tmax, 1, 300., 0.);
     OpenSMOKE_DRG_Analysis (T, P, c);
+
+    // Move T away and back, so that the map computes the constants again,
+    // with the reduced set. Without this, the map keeps the full constants
+    // of the analysis at the same T.
+    OpenSMOKE_GasProp_SetTemperature (T + 1.);
+    OpenSMOKE_GasProp_SetTemperature (T);
     OpenSMOKE_DRG_ReducedFormationRates (c, Rred);
+
+    // The full rates after the reduced ones, at the same T: the interface
+    // must restore the constants of the unimportant reactions.
+    OpenSMOKE_GasProp_ReactionRates (c);
+    OpenSMOKE_GasProp_FormationRates (Rafter);
+    double dRafter = 0.;
+    for (int i=0; i<NS; i++)
+      dRafter = fmax (dRafter, fabs (Rafter[i] - R[i]));
 
     double dR = 0.;
     for (int i=0; i<NS; i++)
@@ -52,6 +66,8 @@ int main () {
     if (eps == 0.)
       fprintf (stderr, "eps = 0: max |dR| = %g, dQR = %g\n",
                dR, OpenSMOKE_GasProp_HeatRelease (Rred) - QR);
+    fprintf (stderr, "eps = %g: full rates after the reduced ones, "
+             "max |dR| = %g\n", eps, dRafter);
   }
 
   // Below the threshold temperature: only the key species, no reactions

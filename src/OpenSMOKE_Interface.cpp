@@ -47,6 +47,11 @@ OpenSMOKE::KineticsMap_Surface_CHEMKIN* kineticsSurfaceMapXML;
 
 static OpenSMOKE::DRG* drg;
 
+// The last temperature given to the kinetic map of the gas. The DRG needs it
+// to restore the kinetic constants of the full mechanism (see
+// DRG::RestoreKineticConstants), because the map has no accessor for T.
+static double gas_T_last = 300.;
+
 speciesMap* species_map;
 mixtureL* liqmix;
 
@@ -258,6 +263,7 @@ void OpenSMOKE_GasProp_SetTemperature (const double T) {
   thermodynamicsMapXML->SetTemperature(T);
   transportMapXML->SetTemperature(T);
   kineticsMapXML->SetTemperature(T);
+  gas_T_last = T;
 }
 
 void OpenSMOKE_LiqProp_SetPressure (const double P) {
@@ -291,10 +297,14 @@ void OpenSMOKE_SolProp_SetTemperature (const double T) {
 } 
 
 void OpenSMOKE_GasProp_KineticConstants (void) {
+  if (drg != NULL)
+    drg->RestoreKineticConstants(gas_T_last);
   kineticsMapXML->KineticConstants();
 }
 
 void OpenSMOKE_GasProp_ReactionRates (const double * c) {
+  if (drg != NULL)
+    drg->RestoreKineticConstants(gas_T_last);
   kineticsMapXML->ReactionRates(c);
 }
 
@@ -712,14 +722,20 @@ void OpenSMOKE_DRG_Init (const char** key_species, int nkey,
   std::vector<double> temperatures (T, T + nT);
   std::vector<double> epsilons (eps, eps + nT);
 
-  cleanptr (drg); // a second call replaces the old object
+  // A second call replaces the old object. Restore the full constants first,
+  // because the new object does not know that the old one changed them.
+  if (drg != NULL)
+    drg->RestoreKineticConstants(gas_T_last);
+  cleanptr (drg);
   drg = new OpenSMOKE::DRG(*thermodynamicsMapXML, *kineticsMapXML, keySpecies, temperatures,
       T_threshold, R_threshold, epsilons);
 }
 
 void OpenSMOKE_DRG_Analysis (double T, double P, const double* c) {
-  if (drg != NULL)
-    drg->Analysis(T, P, c);
+  if (drg != NULL) {
+    drg->Analysis(T, P, c);   // the analysis sets T on the kinetic map
+    gas_T_last = T;
+  }
   else
    OpenSMOKE::FatalErrorMessage("Must Initialize DRG before calling Analysis");
 }
