@@ -1,0 +1,3 @@
+dt = 1: solutions agree: ok, Jacobian called: ok, fewer calls of the equations: ok
+dt = 40: solutions agree: ok, Jacobian called: ok, fewer calls of the equations: ok
+dt = 400000: solutions agree: ok, Jacobian called: ok, fewer calls of the equations: ok

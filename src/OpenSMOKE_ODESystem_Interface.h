@@ -50,7 +50,7 @@ namespace OpenSMOKE
   public:
 
     //ODESystem_Interface() { args_ = NULL; }
-    ODESystem_Interface() {}
+    ODESystem_Interface() { jacfun_ = NULL; }
 
     ~ODESystem_Interface () {}
 
@@ -62,6 +62,11 @@ namespace OpenSMOKE
     void SetNumberOfEquations(unsigned int ne)
     {
       ne_ = ne;
+    }
+
+    void SetJacobian(jacfunction jacfun)
+    {
+      jacfun_ = jacfun;
     }
 
     void SetUserArgs(void * args)
@@ -82,8 +87,10 @@ namespace OpenSMOKE
       odefun_ (Y.data(), t, DY.data(), args_);
     }
 
+    // Called only with SetUserDefinedJacobian(). J is column-major.
     void Jacobian(const Eigen::VectorXd &Y, const double t, Eigen::MatrixXd &J)
     {
+      jacfun_ (Y.data(), t, J.data(), args_);
     }
 
     void Jacobian(const Eigen::VectorXd &Y, const double t, Eigen::SparseMatrix<double> &J)
@@ -98,6 +105,7 @@ namespace OpenSMOKE
 
     void * args_;
     odefunction odefun_;
+    jacfunction jacfun_;
   };
 }
 

@@ -665,9 +665,12 @@ double OpenSMOKE_GetMixtureFractionFromMassFractions (const double* y, const dou
   return thermodynamicsMapXML->GetMixtureFractionFromMassFractions (y, names, yfuelstd, names, yoxstd);
 }
 
-void OpenSMOKE_ODESolver
+// The solver of OpenSMOKE_ODESolver() and OpenSMOKE_ODESolver_Jacobian().
+// jac = NULL: finite-difference Jacobian.
+static void ODESolver
 (
   odefunction ode,
+  jacfunction jac,
   unsigned int neq,
   double dt,
   double * y,
@@ -691,6 +694,14 @@ void OpenSMOKE_ODESolver
 
   //// Set initial conditions
   ode_solver.SetInitialConditions(t0, y0_eigen);
+
+  //// User Jacobian. After SetInitialConditions(): it sets the type of the
+  //// Jacobian back to numerical, with no message.
+  if (jac != NULL)
+  {
+    ode_solver.SetJacobian(jac);
+    ode_solver.SetUserDefinedJacobian();
+  }
 
   //// Set linear algebra options
   ode_solver.SetLinearAlgebraSolver(ode_parameters_->linear_algebra());
@@ -727,6 +738,31 @@ void OpenSMOKE_ODESolver
   {
     std::cout<< "Solution not found." << std::endl;
   }
+}
+
+void OpenSMOKE_ODESolver
+(
+  odefunction ode,
+  unsigned int neq,
+  double dt,
+  double * y,
+  void * args
+)
+{
+  ODESolver (ode, NULL, neq, dt, y, args);
+}
+
+void OpenSMOKE_ODESolver_Jacobian
+(
+  odefunction ode,
+  jacfunction jac,
+  unsigned int neq,
+  double dt,
+  double * y,
+  void * args
+)
+{
+  ODESolver (ode, jac, neq, dt, y, args);
 }
 
 void OpenSMOKE_DRG_Init (const char** key_species, int nkey,

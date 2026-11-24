@@ -17,6 +17,11 @@ extern "C" {
 
 typedef void(*odefunction)(const double * y, const double t, double * dy, void * args);
 
+/* Jacobian of an ODE system: J = df/dy (not I - h*beta*J), dense,
+   column-major, neq x neq: J[i + neq*j] = df_i/dy_j. The solver gives J
+   with all the entries at 0 only at its first call; set all the entries. */
+typedef void(*jacfunction)(const double * y, const double t, double * J, void * args);
+
 /**
 ## Initialize, Finalize and Read Data
 
@@ -807,6 +812,23 @@ double
 */
 void
   OpenSMOKE_ODESolver (odefunction ode, unsigned int neq, double dt, double * y, void * args);
+
+/**
+### *OpenSMOKE_ODESolver_Jacobian()*: Native OpenSMOKE ODE solver with a user Jacobian
+
+The same as `OpenSMOKE_ODESolver()`, but the solver calls *jac* for the
+Jacobian, and not *neq* calls of *ode* (finite differences).
+
+* *ode*: pointer to the function implementing the ODE system
+* *jac*: pointer to the function implementing its Jacobian (see `jacfunction`)
+* *neq*: number of equations
+* *dt*: time step
+* *y*: unknowns of the problem (modified)
+* *args*: additional struct with arguments required by *ode* and *jac*
+*/
+void
+  OpenSMOKE_ODESolver_Jacobian (odefunction ode, jacfunction jac, unsigned int neq,
+                                double dt, double * y, void * args);
 
 /**
 ## Directed Relation Graph (DRG)

@@ -52,3 +52,11 @@ add_test (NAME OpenSMOKE_GasJacobian
           COMMAND bash -c "
             ./OpenSMOKE_GasJacobian 2> OpenSMOKE_GasJacobian.log
             diff OpenSMOKE_GasJacobian.log ../tests/OpenSMOKE_GasJacobian.ref")
+
+add_executable (OpenSMOKE_ODESolverJacobian tests/OpenSMOKE_ODESolverJacobian.cpp)
+target_link_libraries (OpenSMOKE_ODESolverJacobian PRIVATE opensmoke)
+
+add_test (NAME OpenSMOKE_ODESolverJacobian
+          COMMAND bash -c "
+            ./OpenSMOKE_ODESolverJacobian 2> OpenSMOKE_ODESolverJacobian.log
+            diff OpenSMOKE_ODESolverJacobian.log ../tests/OpenSMOKE_ODESolverJacobian.ref")
